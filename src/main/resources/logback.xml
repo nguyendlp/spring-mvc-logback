@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<configuration debug="true" scan="true">
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<layout class="ch.qos.logback.classic.PatternLayout">
@@ -8,40 +8,57 @@
 			</Pattern>
 		</layout>
 	</appender>
-	
-	<property name="LOGPATH" value="D:/spring-mvc-logback-app/log" />
-	<timestamp key="myTimestamp" datePattern="yyyyMMdd_HH"/>
 
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<file>${LOGPATH}/mylog.log</file>
+	<property name="LOG_PATH" value="D:/spring-mvc-logback-app/logs" />
+	<property name="LOG_ARCHIVE" value="${LOG_PATH}/archive" />
+	<property name="LOG_CSV_ARCHIVE" value="${LOG_PATH}/csv_archive" />
+
+	<timestamp key="myTimestamp" datePattern="yyyyMMdd_HH" />
+
+	<appender name="CSV_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_PATH}/springmvc.csv</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_CSV_ARCHIVE}/%d{yyyyMMdd_HH}.csv</fileNamePattern>
+			<maxHistory>24</maxHistory>
+			<totalSizeCap></totalSizeCap>
+		</rollingPolicy>
 		
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{5} - %msg%n</Pattern>
 		</encoder>
+	</appender>
+	
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_PATH}/springmvc.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_ARCHIVE}/%d{yyyyMMdd}.log</fileNamePattern>
+			<maxHistory>31</maxHistory>
+			<totalSizeCap></totalSizeCap>
+		</rollingPolicy>
 		
-		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <FileNamePattern>mylog.%i{yyyy-MM-dd_HH:mm:ss.SSS}}.log</FileNamePattern>
-            <MinIndex>1</MinIndex>
-            <MaxIndex>10</MaxIndex>
-        </rollingPolicy>
-        
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>10KB</MaxFileSize>
-        </triggeringPolicy>
-        
-     </appender>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{5} - %msg%n</Pattern>
+		</encoder>
+	</appender>
 
 	<logger name="org.springframework" level="debug" additivity="false">
 		<appender-ref ref="STDOUT" />
+		<appender-ref ref="CSV_FILE" />
 		<appender-ref ref="FILE" />
-		
 	</logger>
-	
+
+	<logger name="org.springframework" level="info" additivity="false">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="CSV_FILE" />
+		<appender-ref ref="FILE" />
+	</logger>
+
 	<logger name="com.mvc.logback" level="debug" additivity="false">
 		<appender-ref ref="STDOUT" />
+		<appender-ref ref="CSV_FILE" />
 		<appender-ref ref="FILE" />
 	</logger>
-	 
+
 	<root level="error">
 		<appender-ref ref="STDOUT" />
 	</root>

@@ -11,13 +11,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class WelcomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(WelcomeController.class);
-	 
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String welcome(Model model) {
 		
-		for(int i = 0; i < 10000; i++){
-			logger.debug("welcome() is executed, value {}", "mkyong");
+		for(int i = 0; i < 1000; i++){
+			logger.debug("welcome() is executed, value {}", "mvc-logback");
 			logger.error("This is Error message", new Exception("Testing"));
 		}
 		model.addAttribute("msg", "Hello Spring MVC + Logback");
